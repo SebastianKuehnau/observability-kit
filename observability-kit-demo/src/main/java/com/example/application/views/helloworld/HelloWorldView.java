@@ -1,7 +1,5 @@
 package com.example.application.views.helloworld;
 
-import java.util.Random;
-
 import com.example.application.views.MainLayout;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
@@ -26,6 +24,7 @@ public class HelloWorldView extends HorizontalLayout {
 
     private final TextField name;
     private final Button sayHello;
+    private final Button crashButton;
     private final Button longTask;
     private final Button spanExample;
 
@@ -33,12 +32,14 @@ public class HelloWorldView extends HorizontalLayout {
         name = new TextField("Your name");
         sayHello = new Button("Say hello");
         sayHello.addClickListener(e -> {
-            if (new Random().nextInt(15) % 5 == 0) {
-                throw new IllegalStateException("Exception on the backend!");
-            }
             Notification.show("Hello " + name.getValue());
         });
         sayHello.addClickShortcut(Key.ENTER);
+
+        crashButton = new Button("Crash");
+        crashButton.addClickListener(buttonClickEvent -> {
+            throw new RuntimeException("This is a test exception");
+        });
 
         longTask = new Button("Long running task");
         longTask.addClickListener(e -> {
@@ -52,10 +53,10 @@ public class HelloWorldView extends HorizontalLayout {
         });
 
         setMargin(true);
-        setVerticalComponentAlignment(Alignment.END, name, sayHello, longTask,
+        setVerticalComponentAlignment(Alignment.END, name, sayHello, crashButton, longTask,
             spanExample);
 
-        add(name, sayHello, longTask, spanExample);
+        add(name, sayHello, crashButton, longTask, spanExample);
     }
 
     @WithSpan
@@ -75,6 +76,7 @@ public class HelloWorldView extends HorizontalLayout {
         try {
             span.setAttribute("client.x", clientX);
             span.setAttribute("client.y", clientY);
+            span.setAttribute("error-message", "This could be your custom error message");
         } finally {
             span.end();
         }
