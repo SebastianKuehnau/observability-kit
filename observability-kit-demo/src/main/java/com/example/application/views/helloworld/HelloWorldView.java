@@ -23,34 +23,26 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 public class HelloWorldView extends HorizontalLayout {
 
     private final TextField name;
-    private final Button sayHello;
-    private final Button crashButton;
-    private final Button longTask;
-    private final Button spanExample;
 
     public HelloWorldView() {
         name = new TextField("Your name");
-        sayHello = new Button("Say hello");
-        sayHello.addClickListener(e -> {
-            Notification.show("Hello " + name.getValue());
-        });
+        Button sayHello = new Button("Say hello");
+        sayHello.addClickListener(e -> Notification.show("Hello " + name.getValue()));
         sayHello.addClickShortcut(Key.ENTER);
 
-        crashButton = new Button("Crash");
+        Button crashButton = new Button("Crash");
         crashButton.addClickListener(buttonClickEvent -> {
             throw new RuntimeException("This is a test exception");
         });
 
-        longTask = new Button("Long running task");
+        Button longTask = new Button("Long running task");
         longTask.addClickListener(e -> {
             startLongTask();
             Notification.show("Job completed for " + name.getValue());
         });
 
-        spanExample = new Button("Custom span example");
-        spanExample.addClickListener(e -> {
-            spanExample(e.getClientX(), e.getClientY());
-        });
+        Button spanExample = new Button("Custom span example");
+        spanExample.addClickListener(e -> spanExample(e.getClientX(), e.getClientY()));
 
         setMargin(true);
         setVerticalComponentAlignment(Alignment.END, name, sayHello, crashButton, longTask,
