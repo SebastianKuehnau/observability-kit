@@ -1,11 +1,8 @@
-version: "3.8"
-
 services:
   tempo:
     image: grafana/tempo:latest
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
-      #- tempo_data:/tmp/tempo
       - ./tempo/tempo.yaml:/etc/tempo.yaml
     ports:
       - "3200"  # tempo
@@ -75,7 +72,5 @@ volumes:
     driver: local
   grafana_data:
     driver: local
-  #tempo_data:
-  #  driver: local
 networks:
   o11y:
