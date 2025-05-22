@@ -1,8 +1,10 @@
 services:
   tempo:
-    image: grafana/tempo:latest
+    image: grafana/tempo@sha256:7541828fa9babc02ebf2b13d344759558ae2e68418a3a6919e8bc7f62452f1f9
     command: [ "-config.file=/etc/tempo.yaml" ]
+    user: "0:0"
     volumes:
+      - tempo_data:/tmp/tempo
       - ./tempo/tempo.yaml:/etc/tempo.yaml
     ports:
       - "3200"  # tempo
@@ -11,7 +13,7 @@ services:
     networks:
       - o11y
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki@sha256:4c431d2e6b9b38718694b31c5d56be7c80dc69c513215fde1aeb5b02cd4e2665
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
@@ -28,7 +30,7 @@ services:
     networks:
       - o11y
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus@sha256:78ed1f9050eb9eaf766af6e580230b1c4965728650e332cd1ee918c0c4699775
     command:
       - "--enable-feature=remote-write-receiver"
       - "--config.file=/etc/prometheus/prometheus.yml"
@@ -40,7 +42,7 @@ services:
     networks:
       - o11y
   grafana:
-    image: grafana/grafana-enterprise
+    image: grafana/grafana-enterprise@sha256:db6e5cd3e2f368e96935ffdd06f4dedc2391f09017c657661395dbce4a30d99e
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
@@ -71,6 +73,8 @@ volumes:
   prometheus:
     driver: local
   grafana_data:
+    driver: local
+  tempo_data:
     driver: local
 networks:
   o11y:

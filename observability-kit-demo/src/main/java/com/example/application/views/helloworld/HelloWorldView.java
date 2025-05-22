@@ -1,6 +1,7 @@
 package com.example.application.views.helloworld;
 
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.button.ButtonVariant;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
@@ -29,19 +30,23 @@ public class HelloWorldView extends HorizontalLayout {
         Button sayHello = new Button("Say hello");
         sayHello.addClickListener(e -> Notification.show("Hello " + name.getValue()));
         sayHello.addClickShortcut(Key.ENTER);
+        sayHello.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         Button crashButton = new Button("Crash");
+        crashButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
         crashButton.addClickListener(buttonClickEvent -> {
             throw new RuntimeException("This is a test exception");
         });
 
         Button longTask = new Button("Long running task");
+        longTask.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_WARNING);
         longTask.addClickListener(e -> {
             startLongTask();
             Notification.show("Job completed for " + name.getValue());
         });
 
         Button spanExample = new Button("Custom span example");
+        spanExample.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
         spanExample.addClickListener(e -> spanExample(e.getClientX(), e.getClientY()));
 
         setMargin(true);
@@ -69,6 +74,7 @@ public class HelloWorldView extends HorizontalLayout {
             span.setAttribute("client.x", clientX);
             span.setAttribute("client.y", clientY);
             span.setAttribute("error-message", "This could be your custom error message");
+            span.setAttribute("warn-message", "This could be your custom warn message");
         } finally {
             span.end();
         }
